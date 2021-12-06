@@ -24,7 +24,20 @@ const Post = ({ post, postId }) => {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const { db, storage } = initializeAuth();
+  const [likes, setLikes] = useState([]);
 
+  // get the likes from db
+  useEffect(
+    () =>
+      onSnapshot(query(collection(db, "posts", postId, "likes")), (snapshot) =>
+        setLikes(snapshot.docs)
+      ),
+    [db, postId]
+  );
+  // send likes to db
+  const likePost = async () => {};
+
+  // Get the comments form db
   useEffect(
     () =>
       onSnapshot(
@@ -34,9 +47,10 @@ const Post = ({ post, postId }) => {
         ),
         (snapshot) => setComments(snapshot.docs)
       ),
-    [db]
+    [db, postId]
   );
 
+  // send comments to the db
   const sendComment = async (e) => {
     e.preventDefault();
 
@@ -86,7 +100,7 @@ const Post = ({ post, postId }) => {
 
       {/* comments */}
       {comments.length > 0 && (
-        <div className="ml-10 px-3 h-20 overflow-y-scroll scrollbar-thumb-black scrollbar-thin">
+        <div className="ml-10 h-20 overflow-y-scroll scrollbar-thumb-black scrollbar-thin">
           {comments.map((comment) => {
             return (
               <div
@@ -102,7 +116,9 @@ const Post = ({ post, postId }) => {
                   <span className="font-bold">{comment.data().username}</span>{" "}
                   <span>{comment.data().comment}</span>
                 </p>
-                <Moment fromNow>{comment.data().timestamp?.toDate()}</Moment>
+                <p className="text-xs font-semibold px-3 text-gray-500">
+                  <Moment fromNow>{comment.data().timestamp?.toDate()}</Moment>
+                </p>
               </div>
             );
           })}
