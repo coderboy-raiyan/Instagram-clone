@@ -1,14 +1,14 @@
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider as NextAuthProvider } from "next-auth/react";
 import { RecoilRoot } from "recoil";
 import "../Styles/globals.css";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
-    <SessionProvider session={session}>
+    <NextAuthProvider session={pageProps.session}>
       <RecoilRoot>
         <Component {...pageProps} />
       </RecoilRoot>
-    </SessionProvider>
+    </NextAuthProvider>
   );
 }
 
